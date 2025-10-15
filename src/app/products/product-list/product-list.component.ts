@@ -3,7 +3,7 @@ import { Product } from '../../models/product.interface';
 import { AsyncPipe, CurrencyPipe, UpperCasePipe } from '@angular/common';
 import { ProductDetailComponent } from "../product-detail/product-detail.component";
 import { ProductService } from '../../services/product.service';
-import { Observable } from 'rxjs';
+import { catchError, EMPTY, Observable } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
@@ -22,9 +22,21 @@ export class ProductListComponent {
 
   title: string = 'Products'
 
+  message: string
+
   productService = inject(ProductService)
 
-  products$: Observable<Product[]> = this.productService.products$
+  products$: Observable<Product[]> = this
+                                        .productService
+                                        .products$
+                                        .pipe(
+                                          catchError(
+                                            errorMessage => {
+                                              this.message = errorMessage
+                                              return EMPTY
+                                            }
+                                          )
+                                        )
   //products: Product[]
 
   // constructor() {
