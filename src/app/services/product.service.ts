@@ -1,6 +1,6 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { catchError, delay, Observable, tap, throwError } from 'rxjs';
+import { catchError, delay, map, Observable, tap, throwError } from 'rxjs';
 import { Product } from '../models/product.interface';
 
 @Injectable({
@@ -16,12 +16,19 @@ export class ProductService {
     this.initProducts()
   }
 
+  getProductById(id: number): Observable<Product> {
+    return this
+            .products$
+            .pipe(
+              map(products => products.find(product => product.id == id))
+            )
+  }
+
   initProducts() {
     this.products$ = this
                       .http
                       .get<Product[]>(this.baseUrl)
                       .pipe(
-                        delay(1500), // for the demo!!
                         tap(console.table),
                         catchError(this.handleError)
                       )
