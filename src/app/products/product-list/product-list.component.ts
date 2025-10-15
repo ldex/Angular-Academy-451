@@ -1,30 +1,46 @@
 import { Component, inject } from '@angular/core';
 import { Product } from '../../models/product.interface';
-import { AsyncPipe, CurrencyPipe, UpperCasePipe } from '@angular/common';
+import { AsyncPipe, CurrencyPipe, SlicePipe, UpperCasePipe } from '@angular/common';
 import { ProductDetailComponent } from "../product-detail/product-detail.component";
 import { ProductService } from '../../services/product.service';
 import { catchError, EMPTY, Observable } from 'rxjs';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-product-list',
-  imports: [CurrencyPipe, UpperCasePipe, ProductDetailComponent, AsyncPipe],
+  imports: [CurrencyPipe, UpperCasePipe, ProductDetailComponent, AsyncPipe, SlicePipe],
   templateUrl: './product-list.component.html',
   styleUrl: './product-list.component.css'
 })
 export class ProductListComponent {
 
   selectedProduct: Product
+  title: string = 'Products'
+  message: string
+  productService = inject(ProductService)
+
+  // Pagination
+  pageSize = 5
+  start = 0
+  end = this.pageSize
+  pageNumber = 1
+
+  previousPage() {
+    this.start -= this.pageSize
+    this.end -= this.pageSize
+    this.pageNumber--
+    this.selectedProduct = null
+  }
+
+  nextPage() {
+    this.start += this.pageSize
+    this.end += this.pageSize
+    this.pageNumber++
+    this.selectedProduct = null
+  }
 
   onSelect(product: Product) {
     this.selectedProduct = product
   }
-
-  title: string = 'Products'
-
-  message: string
-
-  productService = inject(ProductService)
 
   products$: Observable<Product[]> = this
                                         .productService
@@ -37,18 +53,4 @@ export class ProductListComponent {
                                             }
                                           )
                                         )
-  //products: Product[]
-
-  // constructor() {
-  //   this
-  //     .productService
-  //     .products$
-  //     .pipe(
-  //       takeUntilDestroyed()
-  //     )
-  //     .subscribe(
-  //       response => this.products = response
-  //     )
-  // }
-
 }
