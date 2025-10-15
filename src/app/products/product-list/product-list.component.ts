@@ -4,11 +4,11 @@ import { AsyncPipe, CurrencyPipe, SlicePipe, UpperCasePipe } from '@angular/comm
 import { ProductDetailComponent } from "../product-detail/product-detail.component";
 import { ProductService } from '../../services/product.service';
 import { catchError, EMPTY, Observable } from 'rxjs';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-product-list',
-  imports: [CurrencyPipe, UpperCasePipe, ProductDetailComponent, AsyncPipe, SlicePipe],
+  imports: [CurrencyPipe, UpperCasePipe, RouterLink, AsyncPipe, SlicePipe],
   templateUrl: './product-list.component.html',
   styleUrl: './product-list.component.css'
 })

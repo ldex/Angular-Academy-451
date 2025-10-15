@@ -3,6 +3,7 @@ import { Product } from '../../models/product.interface';
 import { CurrencyPipe, DatePipe, UpperCasePipe } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import { ProductService } from '../../services/product.service';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-product-detail',
@@ -23,6 +24,9 @@ export class ProductDetailComponent {
     this
       .productService
       .getProductById(id)
+      .pipe(
+        takeUntilDestroyed()
+      )
       .subscribe(
         data => this.product = data
       )
